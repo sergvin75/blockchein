@@ -28,13 +28,19 @@ def check_integrity():
         f = open(blockchain_dir + str(file))
 # загружаем из файла в json формате значение соответсвующее 'hash'
         h = json.load(f)['hash']
+# имя предыдущего файла
         prev_file = str(file - 1)
+# расчет hexdigest
         actual_hash = get_hash(prev_file)
+
+# Проверка посчитанного и записаного
 
         if h == actual_hash:
             res = 'OK'
         else:
             res = 'Corrupted'
+
+# Вывод результата. Функция format расставляет свои аргументы (prev_file, res) в {}
         print('block {} is: {}'.format(prev_file, res))
 
 def write_block(name, amount, to_whom, prev_hash=''):
@@ -42,9 +48,9 @@ def write_block(name, amount, to_whom, prev_hash=''):
 
     files = sorted(os.listdir(blockchain_dir))
     files = sorted([int(i) for i in files])
-
+# Нашли последний файл
     last_file = files[-1]
-
+# Определяем новое имя файла и преводим его в строку
     filename = str(last_file + 1)
 
     prev_hash = get_hash(str(last_file))
@@ -60,7 +66,10 @@ def write_block(name, amount, to_whom, prev_hash=''):
 
 
 def main():
+#Создание и запись блоков
     #    write_block(name='ivan', amount=2, to_whom='katja')
+
+# проверка блоков
     check_integrity()
 
 
