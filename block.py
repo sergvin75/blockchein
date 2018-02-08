@@ -52,7 +52,7 @@ def write_block(name, amount, to_whom, prev_hash=''):
     last_file = files[-1]
 # Определяем новое имя файла и преводим его в строку
     filename = str(last_file + 1)
-
+# Получаем hash предыдущего файла
     prev_hash = get_hash(str(last_file))
 
     #    print(filename)
@@ -61,7 +61,9 @@ def write_block(name, amount, to_whom, prev_hash=''):
             'amount': amount,
             'to_whom': to_whom,
             'hash': prev_hash}
+# открываем для записи новый файл (filename), 'w' - запись
     with open(blockchain_dir + filename, 'w') as file:
+# запись в формате json, indent=4 - делаем 4 отступа, чтобы все в одну строку не было
         json.dump(data, file, indent=4, ensure_ascii=False)
 
 
