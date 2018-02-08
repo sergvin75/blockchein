@@ -5,7 +5,6 @@ import hashlib
 # Находим папку blockchain относительно нашей текущей папки
 blockchain_dir = os.curdir + '/blockchain/'
 
-
 # Считаем hexdigest файла переданного в filename
 def get_hash(filename):
 #    blockchain_dir = os.curdir + '/blockchain/'
@@ -13,14 +12,20 @@ def get_hash(filename):
     file = open(blockchain_dir + filename, 'rb').read()
     return hashlib.md5(file).hexdigest()
 
-
+def get_files():
+   files = os.listdir(blockchain_dir)
+# переводим имена файлов в int и сортируем по порядку (от 1 по возрастанию)
+   return sorted([int(i) for i in files])
 
 def check_integrity():
 #    blockchain_dir = os.curdir + '/blockchain/'
 # Получаем список файлов из папки blockchain
-    files = os.listdir(blockchain_dir)
+#    files = os.listdir(blockchain_dir)
 # переводим имена файлов в int и сортируем по порядку (от 1 по возрастанию)
-    files = sorted([int(i) for i in files])
+#    files = sorted([int(i) for i in files])
+    files = get_files()
+
+    results = []
 
 # По очереди для всех файлов, кроме первого (он генезис блок и не имеет Hash предыдущего блока)
     for file in files[1:]:
@@ -41,19 +46,26 @@ def check_integrity():
             res = 'Corrupted'
 
 # Вывод результата. Функция format расставляет свои аргументы (prev_file, res) в {}
-        print('block {} is: {}'.format(prev_file, res))
+#        print('block {} is: {}'.format(prev_file, res))
+
+        results.append({'block': prev_file, 'result': res})
+
+    return results
+
 
 def write_block(name, amount, to_whom, prev_hash=''):
 #    blockchain_dir = os.curdir + '/blockchain/'
 
-    files = sorted(os.listdir(blockchain_dir))
-    files = sorted([int(i) for i in files])
+#    files = sorted(os.listdir(blockchain_dir))
+#    files = sorted([int(i) for i in files])
+    files = get_files()
+
 # Нашли последний файл
-    last_file = files[-1]
+    prev_file = files[-1]
 # Определяем новое имя файла и преводим его в строку
-    filename = str(last_file + 1)
+    filename = str(prev_file + 1)
 # Получаем hash предыдущего файла
-    prev_hash = get_hash(str(last_file))
+    prev_hash = get_hash(str(prev_file))
 
     #    print(filename)
 
@@ -72,7 +84,7 @@ def main():
     #    write_block(name='ivan', amount=2, to_whom='katja')
 
 # проверка блоков
-    check_integrity()
+    print(check_integrity())
 
 
 if __name__ == '__main__':
